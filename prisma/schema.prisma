@@ -1,0 +1,629 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+}
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MessageStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  name         String?
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(ADMIN)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("admin_users")
+}
+
+model Profile {
+  id          String   @id @default(cuid())
+  name        String
+  headline    String?
+  bio         String?
+  avatarUrl   String?
+  resumeUrl   String?
+  email       String?
+  location    String?
+  socialLinks Json?
+  updatedAt   DateTime @updatedAt
+
+  @@map("profiles")
+}
+
+model Project {
+  id             String        @id @default(cuid())
+  title          String
+  slug           String        @unique
+  summary        String
+  content        String?
+  coverUrl       String?
+  stack          String[]      @default([])
+  liveUrl        String?
+  repoUrl        String?
+  featured       Boolean       @default(false)
+  status         PublishStatus @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?
+  caseStudy      CaseStudy?
+  attachments    Json?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status, createdAt])
+  @@index([featured, status])
+  @@map("projects")
+}
+
+// --- ADDED FOR CASE STUDIES MANAGEMENT ---
+
+model CaseStudyCategory {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  slug        String      @unique
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  caseStudies CaseStudy[]
+
+  @@map("case_study_categories")
+}
+
+model CaseStudy {
+  id         String             @id @default(cuid())
+  projectId  String             @unique
+  categoryId String?
+  category   CaseStudyCategory? @relation(fields: [categoryId], references: [id])
+
+  clientName          String?
+  duration            String?
+  problem             String
+  process             String?
+  solution            String
+  outcome             String?
+  architectureDiagram String?
+  imageGallery        String[] @default([])
+  content             String?
+
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+  @@map("case_studies")
+}
+
+// -----------------------------------------
+
+model BlogPost {
+  id             String        @id @default(cuid())
+  title          String
+  slug           String        @unique
+  excerpt        String?
+  content        String
+  coverUrl       String?
+  status         PublishStatus @default(DRAFT)
+  publishedAt    DateTime?
+  seoTitle       String?
+  seoDescription String?
+  attachments    Json?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status, publishedAt])
+  @@map("blog_posts")
+}
+
+// --- CMS ARTICLES & NOTES ---
+
+model ArticleCategory {
+  id             String   @id @default(cuid())
+  name           String   @unique
+  slug           String   @unique
+  description    String?
+  icon           String?
+  categoryType   String   @default("Core")
+  link           String?
+  active         Boolean  @default(true)
+  featured       Boolean  @default(false)
+  seoTitle       String?
+  seoDescription String?
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("article_categories")
+}
+
+model NoteCategory {
+  id             String   @id @default(cuid())
+  name           String   @unique
+  slug           String   @unique
+  description    String?
+  icon           String?
+  link           String?
+  active         Boolean  @default(true)
+  featured       Boolean  @default(false)
+  seoTitle       String?
+  seoDescription String?
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("note_categories")
+}
+
+model Article {
+  id             String        @id @default(cuid())
+  title          String
+  slug           String        @unique
+  category       String
+  coverImage     String?
+  fullContent    String
+  referenceLink  String?
+  tags           String[]      @default([])
+  status         PublishStatus @default(DRAFT)
+  featured       Boolean       @default(false)
+  author         String        @default("Admin")
+  publishDate    String
+  readTime       String?       @default("5 min read")
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@map("cms_articles")
+}
+
+model Note {
+  id             String        @id @default(cuid())
+  title          String
+  slug           String        @unique
+  category       String
+  coverImage     String?
+  fullContent    String
+  commandSnippet String?
+  referenceLink  String?
+  tags           String[]      @default([])
+  status         PublishStatus @default(DRAFT)
+  featured       Boolean       @default(false)
+  author         String        @default("Admin")
+  publishDate    String
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@map("cms_notes")
+}
+
+// -------------------------------------
+
+model Skill {
+  id        String   @id @default(cuid())
+  name      String
+  category  String?
+  level     Int?
+  sortOrder    Int      @default(0)
+  rootIcon     String?  @default("Code2")
+  categoryIcon String?  @default("Network")
+  percentage   Int      @default(85)
+  createdAt    DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+  @@map("skills")
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  icon        String?
+  category    String   @default("SERVICE")
+  sortOrder   Int      @default(0)
+  active      Boolean  @default(true)
+  attachments Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("services")
+}
+
+model Experience {
+  id           String    @id @default(cuid())
+  organization String
+  role         String
+  logoUrl      String?
+  description  String?
+  startDate    DateTime
+  endDate      DateTime?
+  current      Boolean   @default(false)
+  sortOrder    Int       @default(0)
+  attachments  Json?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("experiences")
+}
+
+model Certification {
+  id            String    @id @default(cuid())
+  name          String
+  issuer        String
+  category      String?
+  credentialUrl String?
+  issuedAt      DateTime?
+  expiresAt     DateTime?
+  imageUrl      String?
+  sortOrder     Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([category])
+  @@index([sortOrder])
+  @@map("certifications")
+}
+
+model Client {
+  id           String        @id @default(cuid())
+  name         String
+  website      String?
+  logoUrl      String?
+  testimonials Testimonial[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("clients")
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  clientId   String?
+  clientName String
+  role       String?
+  content    String
+  avatarUrl  String?
+  featured   Boolean  @default(false)
+  client     Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("testimonials")
+}
+
+model Lab {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String
+  demoUrl     String?
+  repoUrl     String?
+  coverUrl    String?
+  status      PublishStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("labs")
+}
+
+model ContactMessage {
+  id               String        @id @default(cuid())
+  name             String
+  email            String
+  subject          String?
+  message          String
+  status           MessageStatus @default(NEW)
+  channel          String        @default("WEBSITE")
+  senderPhone      String?
+  platformSenderId String?
+  metadata         Json?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([status, createdAt])
+  @@index([channel])
+  @@map("contact_messages")
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  url       String
+  fileName  String
+  mimeType  String
+  sizeBytes Int
+  altText   String?
+  provider  String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("media_assets")
+}
+
+model PageContent {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  content        Json
+  seoTitle       String?
+  seoDescription String?
+  updatedAt      DateTime @updatedAt
+
+  @@map("page_contents")
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+
+// ==============================================================================
+// CENTRALIZED AI & AUTOMATION HUB MODELS
+// ==============================================================================
+
+enum WorkflowTriggerType {
+  NEW_CONTACT_MESSAGE
+  BLOG_PUBLISHED
+  PROJECT_CREATED
+  NEW_TESTIMONIAL
+  SCHEDULED_TIME
+  WEBHOOK_RECEIVED
+  MANUAL
+}
+
+enum WorkflowStatus {
+  PENDING
+  RUNNING
+  SUCCESS
+  FAILED
+  SKIPPED
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+}
+
+enum IntegrationCategory {
+  COMMUNICATION
+  DEVELOPMENT
+  AUTOMATION
+}
+
+model AIProvider {
+  id               String       @id @default(cuid())
+  providerKey      String       @unique // "openai", "claude", "gemini", "deepseek", "custom"
+  name             String
+  baseUrl          String?
+  encryptedApiKey  String?
+  isActive         Boolean      @default(true)
+  isDefault        Boolean      @default(false)
+  models           AIModel[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@map("ai_providers")
+}
+
+model AIModel {
+  id               String       @id @default(cuid())
+  providerId       String
+  provider         AIProvider   @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  modelKey         String       // e.g. "gpt-4o", "claude-3-5-sonnet-20241022", "gemini-1.5-pro", "deepseek-chat"
+  displayName      String
+  contextWindow    Int?
+  inputPricePer1k  Float?       @default(0.0)
+  outputPricePer1k Float?       @default(0.0)
+  supportsStreaming Boolean     @default(true)
+  isDefault        Boolean      @default(false)
+  isActive         Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@unique([providerId, modelKey])
+  @@map("ai_models")
+}
+
+model AIUsageLog {
+  id               String       @id @default(cuid())
+  providerKey      String
+  modelKey         String
+  promptTokens     Int          @default(0)
+  completionTokens Int          @default(0)
+  totalTokens      Int          @default(0)
+  estimatedCost    Float        @default(0.0)
+  purpose          String       // e.g. "blog_generation", "seo_optimizer", "reply_assistant"
+  status           String       @default("SUCCESS")
+  durationMs       Int          @default(0)
+  errorDetails     String?
+  createdAt        DateTime     @default(now())
+
+  @@index([providerKey, createdAt])
+  @@index([purpose])
+  @@map("ai_usage_logs")
+}
+
+model Integration {
+  id               String              @id @default(cuid())
+  category         IntegrationCategory
+  serviceKey       String              @unique // "telegram", "smtp", "resend", "github", "webhook"
+  name             String
+  encryptedConfig  String?             // JSON ciphertext of credentials (botToken, chatId, host, etc)
+  isActive         Boolean             @default(false)
+  lastConnectedAt  DateTime?
+  lastTestedAt     DateTime?
+  statusMessage    String?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@index([category, isActive])
+  @@map("integrations")
+}
+
+model AutomationWorkflow {
+  id               String              @id @default(cuid())
+  name             String
+  description      String?
+  triggerType      WorkflowTriggerType
+  triggerConfig    Json?               // e.g. { filter: "urgent", category: "all" }
+  conditions       Json?               // array of condition rules
+  isActive         Boolean             @default(true)
+  retryAttempts    Int                 @default(2)
+  steps            WorkflowStep[]
+  executions       WorkflowExecution[]
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@index([triggerType, isActive])
+  @@map("automation_workflows")
+}
+
+model WorkflowStep {
+  id               String              @id @default(cuid())
+  workflowId       String
+  workflow         AutomationWorkflow  @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  stepOrder        Int
+  actionType       String              // "GENERATE_AI_CONTENT", "SEND_EMAIL", "SEND_TELEGRAM", "CALL_WEBHOOK", "CREATE_NOTIFICATION"
+  actionConfig     Json                // parameters for this action
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@unique([workflowId, stepOrder])
+  @@map("workflow_steps")
+}
+
+model WorkflowExecution {
+  id               String              @id @default(cuid())
+  workflowId       String
+  workflow         AutomationWorkflow  @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  status           WorkflowStatus      @default(PENDING)
+  triggerSource    String              // e.g. "manual", "event:contact_form", "cron"
+  stepResults      Json?               // audit log of each executed step
+  errorMessage     String?
+  durationMs       Int                 @default(0)
+  startedAt        DateTime            @default(now())
+  completedAt      DateTime?
+
+  @@index([workflowId, status])
+  @@index([startedAt])
+  @@map("workflow_executions")
+}
+
+model ScheduledTask {
+  id               String              @id @default(cuid())
+  name             String
+  taskType         String              // "WORKFLOW_EXECUTION", "CONTENT_PUBLISH", "SYSTEM_HEALTH"
+  cronExpression   String?             // e.g. "0 * * * *" (every hour)
+  payload          Json?
+  nextRunAt        DateTime?
+  lastRunAt        DateTime?
+  status           String              @default("ACTIVE") // ACTIVE, PAUSED, COMPLETED
+  lastResult       String?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@index([status, nextRunAt])
+  @@map("scheduled_tasks")
+}
+
+model WebhookEndpoint {
+  id               String              @id @default(cuid())
+  name             String
+  direction        String              @default("OUTBOUND") // "INBOUND" or "OUTBOUND"
+  url              String?
+  encryptedSecret  String?
+  eventFilters     String[]            @default([])
+  isActive         Boolean             @default(true)
+  deliveries       WebhookDelivery[]
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@map("webhook_endpoints")
+}
+
+model WebhookDelivery {
+  id               String              @id @default(cuid())
+  endpointId       String
+  endpoint         WebhookEndpoint     @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+  eventType        String
+  payload          Json
+  responseStatus   Int?
+  responseBody     String?
+  durationMs       Int                 @default(0)
+  attemptCount     Int                 @default(1)
+  success          Boolean             @default(false)
+  createdAt        DateTime            @default(now())
+
+  @@index([endpointId, createdAt])
+  @@map("webhook_deliveries")
+}
+
+model ApiKey {
+  id               String              @id @default(cuid())
+  name             String
+  keyHash          String              @unique
+  maskedKey        String              // e.g. "sk_live_...9f2a"
+  permissions      String[]            @default(["read", "write"])
+  expiresAt        DateTime?
+  lastUsedAt       DateTime?
+  isActive         Boolean             @default(true)
+  createdAt        DateTime            @default(now())
+
+  @@map("api_keys")
+}
+
+model SystemNotification {
+  id               String              @id @default(cuid())
+  title            String
+  message          String
+  type             NotificationType    @default(INFO)
+  sourceModule     String              // "AI", "WORKFLOW", "INTEGRATION", "CONTACT", "SYSTEM"
+  isRead           Boolean             @default(false)
+  metadata         Json?
+  createdAt        DateTime            @default(now())
+
+  @@index([isRead, createdAt])
+  @@map("system_notifications")
+}
+
+model AutomationLog {
+  id               String              @id @default(cuid())
+  level            String              @default("INFO") // INFO, WARN, ERROR
+  category         String              // "AI", "WORKFLOW", "INTEGRATION", "SCHEDULER", "WEBHOOK"
+  message          String
+  context          Json?
+  createdAt        DateTime            @default(now())
+
+  @@index([level, category, createdAt])
+  @@map("automation_logs")
+}

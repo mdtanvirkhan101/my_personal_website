@@ -1,0 +1,348 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* =====================================================
+   * MAIN COLOR PALETTE (Matching Portfolio Home Page)
+   * Background: Deep Navy Purple #0e0e34
+   * Cards/Panels: #141444 (slightly lighter)
+   * Primary Accent: Purple #8b5cf6 → Indigo #6366f1
+   * Secondary Accent: Cyan #22d3ee
+   * ===================================================== */
+
+  /* Backgrounds */
+  --background: #0e0e34;
+  --sidebar-bg: #0b0b2a;
+  --card-bg: rgba(20, 20, 68, 0.85);
+  --foreground: #F7F6F7;
+
+  /* Portfolio Theme Colors */
+  --color-navy-dark: #0e0e34;
+  --color-navy-mid: #141444;
+  --color-navy-light: #1a1a52;
+  --color-purple: #8b5cf6;
+  --color-indigo: #6366f1;
+  --color-cyan: #22d3ee;
+  --color-border: rgba(139, 92, 246, 0.25);
+  --color-border-cyan: rgba(34, 211, 238, 0.2);
+  --color-pearl: #F7F6F7;
+
+  /* Semantic Tokens (Admin Panel) */
+  --primary: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --primary-glow: rgba(139, 92, 246, 0.35);
+  --secondary: #22d3ee;
+
+  /* Typography */
+  --text-primary: #FFFFFF;
+  --text-secondary: #c4b5fd;
+  --text-muted: #94a3b8;
+  --text-accent: #22d3ee;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+body {
+  color: var(--text-muted);
+  background: var(--background);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-poppins), -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+}
+
+/* =====================================================
+ * PARAGRAPH & CONTENT JUSTIFICATION
+ * Ensures readable, clean editorial alignment across public pages
+ * ===================================================== */
+article p,
+section p:not(.text-center):not(.text-right):not(.font-mono),
+main p:not(.text-center):not(.text-right):not(.font-mono),
+footer p:not(.text-center):not(.text-right):not(.font-mono),
+.text-justify {
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  hyphens: auto;
+}
+
+/* =====================================================
+ * AURORA / MESH ANIMATIONS
+ * ===================================================== */
+@keyframes meshFloat1 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.12); }
+}
+
+@keyframes meshFloat2 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(-50px, -40px) scale(0.92); }
+}
+
+@keyframes meshFloat3 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(30px, -50px) scale(1.08); }
+}
+
+.aurora-mesh-1 {
+  animation: meshFloat1 18s ease-in-out infinite;
+}
+
+.aurora-mesh-2 {
+  animation: meshFloat2 22s ease-in-out infinite;
+}
+
+.aurora-mesh-3 {
+  animation: meshFloat3 20s ease-in-out infinite;
+}
+
+/* =====================================================
+ * GLASSMORPHISM PANELS
+ * Matching portfolio home page card style
+ * ===================================================== */
+.glass-panel {
+  background: rgba(20, 20, 68, 0.80);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  position: relative;
+}
+
+.glass-panel-hover {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(26, 26, 74, 0.92);
+  border-color: rgba(139, 92, 246, 0.45);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 24px 48px -15px rgba(14, 14, 52, 0.95), 
+    0 0 30px -5px rgba(139, 92, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+/* =====================================================
+ * GRADIENT TEXT UTILITIES
+ * ===================================================== */
+.text-gradient-pearl {
+  background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 35%, #c4b5fd 75%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, #FFFFFF 0%, #c4b5fd 50%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #FFFFFF 0%, #22d3ee 50%, #0891b2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-royal {
+  background: linear-gradient(135deg, #FFFFFF 0%, #a78bfa 55%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-plum,
+.text-gradient-ice,
+.text-gradient-azure {
+  background: linear-gradient(135deg, #FFFFFF 0%, #c4b5fd 45%, #6366f1 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-steel {
+  background: linear-gradient(135deg, #94A3B8 0%, #64748B 50%, #1E293B 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* =====================================================
+ * HOVER SHEEN (Interactive card effect)
+ * ===================================================== */
+.hover-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-sheen::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 35%,
+    rgba(139, 92, 246, 0.08) 50%,
+    transparent 65%
+  );
+  transform: rotate(30deg) translateY(-100%);
+  transition: transform 0.8s ease;
+  pointer-events: none;
+}
+
+.hover-sheen:hover::after {
+  transform: rotate(30deg) translateY(100%);
+}
+
+/* =====================================================
+ * CUSTOM SCROLLBARS (Purple theme)
+ * ===================================================== */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #0e0e34;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a1a52;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8b5cf6;
+}
+
+/* =====================================================
+ * MARQUEE ANIMATION
+ * ===================================================== */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 34s linear infinite;
+}
+
+/* =====================================================
+ * ULTRA-PREMIUM INTERACTIVE ANIMATIONS
+ * Smooth, micro-animated interactive feel across all pages
+ * ===================================================== */
+@keyframes pulseSubtleGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px -3px rgba(139, 92, 246, 0.25), 0 0 6px -2px rgba(34, 211, 238, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 28px 2px rgba(139, 92, 246, 0.45), 0 0 12px 1px rgba(34, 211, 238, 0.35);
+  }
+}
+
+.animate-glow-pulse {
+  animation: pulseSubtleGlow 4s ease-in-out infinite;
+}
+
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float-gentle {
+  animation: floatGentle 5s ease-in-out infinite;
+}
+
+/* Smooth interactive transitions for cards, buttons, badges */
+button, a, input, select, textarea {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-duration: 200ms;
+}
+
+/* Dynamic Card Hover Lift & Border Shimmer */
+article, .rounded-3xl, .rounded-2xl {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.28s ease, 
+              box-shadow 0.28s ease;
+}
+
+article:hover, .hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* =====================================================
+ * TERMINAL / CURSOR BLINK
+ * ===================================================== */
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.terminal-cursor {
+  animation: cursorBlink 1s infinite;
+}
+
+/* =====================================================
+ * FADE-IN ANIMATION (for page loads)
+ * ===================================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* =====================================================
+ * MOBILE RESPONSIVENESS
+ * ===================================================== */
+@media (max-width: 640px) {
+  .glass-panel {
+    border-radius: 1.25rem;
+  }
+}
+
+/* =====================================================
+ * REDUCED MOTION ACCESSIBILITY
+ * ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
