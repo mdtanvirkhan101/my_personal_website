@@ -4,6 +4,7 @@ import "./globals.css";
 import { prisma } from "@/lib/prisma";
 import { CommandPalette } from "@/components/website/command-palette";
 import { NetworkTelemetryTracker } from "@/components/website/network-telemetry-tracker";
+import { Analytics } from "@vercel/analytics/next";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -79,6 +80,7 @@ export default function RootLayout({
         <CommandPalette />
         <NetworkTelemetryTracker />
         {children}
+        <Analytics />
       </body>
     </html>
   );
