@@ -12,7 +12,7 @@
     "prisma:seed": "tsx prisma/seed.ts",
     "sync:data": "tsx scripts/sync-all-data.ts",
     "sync:preview": "tsx scripts/sync-all-data.ts --dry-run",
-    "sync:staging:preview": "tsx scripts/sync-all-data.ts --staging --dry-run",
+    "sync:staging:preview": "tsx scripts/sync-all-data.ts --staging --dry-run",ss
     "env:check": "tsx scripts/check-database-target.ts",
     "backup:create": "tsx scripts/backup-database.ts",
     "backup:rollback": "tsx scripts/rollback-database.ts --dry-run",

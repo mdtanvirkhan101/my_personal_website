@@ -27,10 +27,10 @@ export async function generateMetadata(): Promise<Metadata> {
       return acc;
     }, {} as Record<string, any>);
 
-    const title = map["site_title"] || "MD Tanvir Khan | Software Developer & Creative Designer";
+    const title = map["site_title"] || "MD TANVIR KHAN | Network, Security & Infrastructure Engineer";
     const description =
       map["seo_description"] ||
-      "Portfolio of MD Tanvir Khan – Software Developer and Creative Designer specializing in high-performance web systems and bespoke digital design.";
+      "Portfolio of MD TANVIR KHAN – Network, Security & Infrastructure Engineer";
     const ogImage = map["seo_og_image"] || undefined;
     const canonical = map["seo_canonical_url"] || undefined;
 
@@ -60,8 +60,8 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   } catch {
     return {
-      title: "MD Tanvir Khan | Software Developer & Creative Designer",
-      description: "Portfolio of MD Tanvir Khan – Software Developer and Creative Designer specializing in high-performance web systems and bespoke digital design.",
+      title: "MD TANVIR KHAN",
+      description: "Network, Security & Infrastructure Engineer",
     };
   }
 }
